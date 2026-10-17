@@ -122,29 +122,29 @@ Do not set `anthropic_api_key` or `claude_code_oauth_token` alongside the federa
 
 ## Inputs
 
-| Input                            | Description                                                                                                             | Required | Default       |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------- | ------------- |
-| `prompt`                         | The prompt to send to Claude Code                                                                                       | No\*     | `''`          |
-| `prompt_file`                    | Path to a file containing the prompt to send to Claude Code                                                             | No\*     | `''`          |
-| `settings`                       | Claude Code settings as a JSON string or path to a settings JSON file                                                   | No       | `''`          |
-| `claude_args`                    | Additional arguments to pass directly to the Claude CLI                                                                 | No       | `''`          |
+| Input                            | Description                                                                                                                                                             | Required | Default       |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------- |
+| `prompt`                         | The prompt to send to Claude Code                                                                                                                                       | No\*     | `''`          |
+| `prompt_file`                    | Path to a file containing the prompt to send to Claude Code                                                                                                             | No\*     | `''`          |
+| `settings`                       | Claude Code settings as a JSON string or path to a settings JSON file                                                                                                   | No       | `''`          |
+| `claude_args`                    | Additional arguments to pass directly to the Claude CLI                                                                                                                 | No       | `''`          |
 | `timeout_minutes`                | Abort the Claude Code session after this many minutes, covering a tool call that never returns as well as the run's own total duration. Unset applies no internal bound | No       | `''`          |
-| `anthropic_api_key`              | Anthropic API key for direct Anthropic API authentication                                                               | No       | `''`          |
-| `claude_code_oauth_token`        | Claude Code OAuth token as an alternative to an Anthropic API key                                                       | No       | `''`          |
-| `anthropic_federation_rule_id`   | Workload identity federation rule ID (fdrl\_...). Requires `id-token: write` permission                                 | No       | `''`          |
-| `anthropic_organization_id`      | Anthropic organization UUID used for workload identity federation                                                       | No       | `''`          |
-| `anthropic_service_account_id`   | Service account ID (svac\_...) the federated token acts as                                                              | No       | `''`          |
-| `anthropic_workspace_id`         | Workspace ID (wrkspc\_...) for federation                                                                               | No       | `''`          |
-| `anthropic_oidc_audience`        | Audience for the GitHub OIDC token request                                                                              | No       | `''`          |
-| `use_bedrock`                    | Use Amazon Bedrock with OIDC authentication                                                                             | No       | `'false'`     |
-| `use_vertex`                     | Use Google Vertex AI with OIDC authentication                                                                           | No       | `'false'`     |
-| `use_foundry`                    | Use Microsoft Foundry with OIDC authentication                                                                          | No       | `'false'`     |
-| `use_node_cache`                 | Enable Node.js dependency caching for projects with lock files                                                          | No       | `'false'`     |
-| `path_to_claude_code_executable` | Path to a custom Claude Code executable                                                                                 | No       | `''`          |
-| `path_to_bun_executable`         | Path to a custom Bun executable                                                                                         | No       | `''`          |
-| `show_full_output`               | Show full JSON output (⚠️ May expose secrets - see [security docs](../docs/security.md#️-full-output-security-warning)) | No       | `'false'`\*\* |
-| `plugins`                        | Newline-separated Claude Code plugin names to install                                                                   | No       | `''`          |
-| `plugin_marketplaces`            | Newline-separated plugin marketplace Git URLs to install                                                                | No       | `''`          |
+| `anthropic_api_key`              | Anthropic API key for direct Anthropic API authentication                                                                                                               | No       | `''`          |
+| `claude_code_oauth_token`        | Claude Code OAuth token as an alternative to an Anthropic API key                                                                                                       | No       | `''`          |
+| `anthropic_federation_rule_id`   | Workload identity federation rule ID (fdrl\_...). Requires `id-token: write` permission                                                                                 | No       | `''`          |
+| `anthropic_organization_id`      | Anthropic organization UUID used for workload identity federation                                                                                                       | No       | `''`          |
+| `anthropic_service_account_id`   | Service account ID (svac\_...) the federated token acts as                                                                                                              | No       | `''`          |
+| `anthropic_workspace_id`         | Workspace ID (wrkspc\_...) for federation                                                                                                                               | No       | `''`          |
+| `anthropic_oidc_audience`        | Audience for the GitHub OIDC token request                                                                                                                              | No       | `''`          |
+| `use_bedrock`                    | Use Amazon Bedrock with OIDC authentication                                                                                                                             | No       | `'false'`     |
+| `use_vertex`                     | Use Google Vertex AI with OIDC authentication                                                                                                                           | No       | `'false'`     |
+| `use_foundry`                    | Use Microsoft Foundry with OIDC authentication                                                                                                                          | No       | `'false'`     |
+| `use_node_cache`                 | Enable Node.js dependency caching for projects with lock files                                                                                                          | No       | `'false'`     |
+| `path_to_claude_code_executable` | Path to a custom Claude Code executable                                                                                                                                 | No       | `''`          |
+| `path_to_bun_executable`         | Path to a custom Bun executable                                                                                                                                         | No       | `''`          |
+| `show_full_output`               | Show full JSON output (⚠️ May expose secrets - see [security docs](../docs/security.md#️-full-output-security-warning))                                                 | No       | `'false'`\*\* |
+| `plugins`                        | Newline-separated Claude Code plugin names to install                                                                                                                   | No       | `''`          |
+| `plugin_marketplaces`            | Newline-separated plugin marketplace Git URLs to install                                                                                                                | No       | `''`          |
 
 \*Either `prompt` or `prompt_file` must be provided, but not both.
 
