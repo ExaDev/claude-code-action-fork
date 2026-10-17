@@ -105,6 +105,10 @@ inputs:
     description: "Additional arguments to pass directly to Claude CLI"
     required: false
     default: ""
+  timeout_minutes:
+    description: "Abort the Claude Code SDK session if it runs longer than this many minutes, covering a tool call that never returns (e.g. a stuck WebFetch) as well as the run's own total duration. Unset (default) applies no internal timeout, leaving the surrounding workflow's own timeout-minutes as the only bound. Set this to a value shorter than the job's timeout-minutes so a hang surfaces as a normal step failure."
+    required: false
+    default: ""
   additional_permissions:
     description: "Additional GitHub permissions to request (e.g., 'actions: read')"
     required: false
@@ -323,6 +327,7 @@ runs:
         INPUT_PATH_TO_CLAUDE_CODE_EXECUTABLE: ${{ inputs.path_to_claude_code_executable }}
         INPUT_PATH_TO_BUN_EXECUTABLE: ${{ inputs.path_to_bun_executable }}
         INPUT_SHOW_FULL_OUTPUT: ${{ inputs.show_full_output }}
+        INPUT_TIMEOUT_MINUTES: ${{ inputs.timeout_minutes }}
         DISPLAY_REPORT: ${{ inputs.display_report }}
         INPUT_PLUGINS: ${{ inputs.plugins }}
         INPUT_PLUGIN_MARKETPLACES: ${{ inputs.plugin_marketplaces }}
