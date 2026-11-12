@@ -1,4 +1,15 @@
-import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test";
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  mock,
+  test,
+} from "bun:test";
+import { mkdtempSync, rmSync, writeFileSync } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
 import type {
   IssuesEvent,
   IssueCommentEvent,
@@ -41,6 +52,7 @@ import { createMockContext, createMockAutomationContext } from "./mockContext";
 const ENV_KEYS = [
   "GITHUB_RUN_ID",
   "PROMPT",
+  "PROMPT_FILE",
   "TRIGGER_PHRASE",
   "ASSIGNEE_TRIGGER",
   "LABEL_TRIGGER",
@@ -408,6 +420,58 @@ describe("parseGitHubContext", () => {
       expect(inputs.includeFixLinks).toBe(true);
       expect(inputs.includeCommentsByActor).toBe("alice");
       expect(inputs.excludeCommentsByActor).toBe("bob");
+    });
+
+    describe("prompt_file", () => {
+      const issuesEvent = {
+        action: "opened",
+        issue: { number: 1 },
+        repository: repositoryPayload,
+      } as unknown as IssuesEvent;
+      let promptDir = "";
+
+      beforeEach(() => {
+        promptDir = mkdtempSync(join(tmpdir(), "prompt-file-"));
+      });
+
+      afterEach(() => {
+        rmSync(promptDir, { recursive: true, force: true });
+      });
+
+      test("a prompt larger than one environment variable may hold is read from the file", () => {
+        // Linux's per-string limit for an environment variable is 32 pages (MAX_ARG_STRLEN), 128 KiB with 4 KiB pages; this prompt is over twice that.
+        const prompt = "x".repeat(300 * 1024);
+        const promptFile = join(promptDir, "prompt.md");
+        writeFileSync(promptFile, prompt);
+        process.env.PROMPT_FILE = promptFile;
+        setEvent("issues", issuesEvent);
+
+        const { inputs } = parseGitHubContext();
+
+        expect(inputs.prompt).toBe(prompt);
+      });
+
+      test("both prompt and prompt_file is an error", () => {
+        const promptFile = join(promptDir, "prompt.md");
+        writeFileSync(promptFile, "from the file");
+        process.env.PROMPT = "inline";
+        process.env.PROMPT_FILE = promptFile;
+        setEvent("issues", issuesEvent);
+
+        expect(() => parseGitHubContext()).toThrow(
+          "Both 'prompt' and 'prompt_file' were provided. Please specify only one.",
+        );
+      });
+
+      test("a prompt_file that does not exist is an error", () => {
+        const promptFile = join(promptDir, "missing.md");
+        process.env.PROMPT_FILE = promptFile;
+        setEvent("issues", issuesEvent);
+
+        expect(() => parseGitHubContext()).toThrow(
+          `Prompt file '${promptFile}' does not exist.`,
+        );
+      });
     });
 
     test("boolean inputs only accept the lowercase string true", () => {
