@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from "fs";
 import * as github from "@actions/github";
 import type {
   IssuesEvent,
@@ -131,6 +132,28 @@ export type AutomationContext = BaseContext & {
 // Union type for all contexts
 export type GitHubContext = ParsedGitHubContext | AutomationContext;
 
+/**
+ * The prompt the caller gave, from the `prompt` input (`PROMPT`) or read from the file the `prompt_file` input names (`PROMPT_FILE`). A prompt too large for one environment variable can only arrive as a file, so the file's content is read here, in process, and never passes through the environment.
+ *
+ * @throws when both inputs are set, or when `prompt_file` names a file that does not exist.
+ */
+export function readPromptInput(): string {
+  const prompt = process.env.PROMPT || "";
+  const promptFile = process.env.PROMPT_FILE || "";
+  if (!promptFile) {
+    return prompt;
+  }
+  if (prompt) {
+    throw new Error(
+      "Both 'prompt' and 'prompt_file' were provided. Please specify only one.",
+    );
+  }
+  if (!existsSync(promptFile)) {
+    throw new Error(`Prompt file '${promptFile}' does not exist.`);
+  }
+  return readFileSync(promptFile, "utf-8");
+}
+
 export function parseGitHubContext(): GitHubContext {
   const context = github.context;
 
@@ -145,7 +168,7 @@ export function parseGitHubContext(): GitHubContext {
     },
     actor: context.actor,
     inputs: {
-      prompt: process.env.PROMPT || "",
+      prompt: readPromptInput(),
       triggerPhrase: process.env.TRIGGER_PHRASE ?? "@claude",
       assigneeTrigger: process.env.ASSIGNEE_TRIGGER ?? "",
       labelTrigger: process.env.LABEL_TRIGGER ?? "",
